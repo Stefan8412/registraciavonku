@@ -8,9 +8,27 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 const RegistrationForm = () => {
   const [email, setEmail] = useState("");
   const [school, setSchool] = useState("");
+  const [numberchild, setNumberchild] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedTime, setSelectedTime] = useState("");
   const [message, setMessage] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const timeSlots = [
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,11 +42,17 @@ const RegistrationForm = () => {
       await addDoc(collection(db, "eventRegistrations"), {
         email,
         school,
+        numberchild,
+        selectedTime, // Store selected time in Firestore
+        checked,
         timestamp: new Date(),
       });
       setMessage("Úspešne registrovaný");
       setEmail("");
       setSchool("");
+      setNumberchild("");
+      setSelectedTime(""); // Reset time selection
+      setChecked(false);
     } catch (error) {
       console.error("Error adding document: ", error);
       setMessage("Error during registration!");
@@ -73,24 +97,15 @@ const RegistrationForm = () => {
           >
             Program
           </ScrollLink>
-          <ScrollLink
-            onClick={() => setMenuOpen(false)}
-            to="qr-section"
-            smooth={true}
-            duration={800}
-            className="block md:inline-block p-4 md:p-1 text-gray-900 font-bold cursor-pointer hover:text-blue-500"
-          >
-            QR
-          </ScrollLink>
         </div>
       </nav>
       <section
         id="home-section"
-        className="flex flex-col items-center justify-center min-h-screen p-6"
+        className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-400 to-blue-300"
       >
-        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className="max-w-2xl w-full mx-auto p-8 rounded-lg shadow-md bg-white">
           <h2 className="text-2xl font-bold text-center text-blue-600 mb-4">
-            Deň PSK registrácia
+            Vonku - Deň PSK
           </h2>
 
           {message && (
@@ -122,6 +137,63 @@ const RegistrationForm = () => {
               />
             </div>
 
+            <div>
+              <label className="block text-gray-700">Počet detí:</label>
+              <input
+                type="number"
+                className="w-full p-2 border rounded-md"
+                placeholder="napíšte počet detí"
+                value={numberchild}
+                onChange={(e) => setNumberchild(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700">Čas príchodu:</label>
+              <select
+                className="w-full p-2 border rounded-md"
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  -- Vyberte čas --
+                </option>
+                {timeSlots.map((time, index) => (
+                  <option key={index} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700">
+                Detské atrakcie 3eur/os:{" "}
+              </label>
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="hidden"
+                  checked={checked}
+                  onChange={() => setChecked(!checked)}
+                />
+                <div
+                  className={`w-10 h-6 flex items-center bg-gray-300 rounded-full p-1 transition duration-300 ease-in-out ${
+                    checked ? "bg-green-500" : "bg-red-500"
+                  }`}
+                >
+                  <div
+                    className={`bg-white w-4 h-4 rounded-full shadow-md transform transition duration-300 ease-in-out ${
+                      checked ? "translate-x-4" : "translate-x-0"
+                    }`}
+                  ></div>
+                </div>
+                <span className="text-gray-700 font-medium">
+                  {checked ? "Áno" : "Nie"}
+                </span>
+              </label>
+            </div>
+
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
@@ -141,16 +213,9 @@ const RegistrationForm = () => {
         <img
           src="/program.png" // Update with your actual image path
           alt="Event Cover"
-          className="w-full max-w-4xl h-auto object-cover rounded-lg shadow-lg
+          className="w-full max-w-4xl h-auto object-cover mt-10 rounded-lg shadow-lg
                sm:max-w-3xl md:max-w-2xl lg:max-w-full"
         />
-      </section>
-      <section
-        id="qr-section"
-        className="min-h-screen flex flex-col items-center justify-center p-6 bg-white"
-      >
-        <h2 className="text-3xl font-bold text-blue-600">5.5.2025</h2>
-        <p className="mt-4 text-center text-gray-700 max-w-2xl"></p>
       </section>
     </div>
   );
