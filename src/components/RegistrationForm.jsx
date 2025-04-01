@@ -8,6 +8,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 const RegistrationForm = () => {
   const [email, setEmail] = useState("");
   const [school, setSchool] = useState("");
+  const [mobile, setMobile] = useState("");
   const [numberchild, setNumberchild] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedTime, setSelectedTime] = useState("");
@@ -42,6 +43,7 @@ const RegistrationForm = () => {
       await addDoc(collection(db, "eventRegistrations"), {
         email,
         school,
+        mobile,
         numberchild,
         selectedTime, // Store selected time in Firestore
         checked,
@@ -104,7 +106,7 @@ const RegistrationForm = () => {
         className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-r from-blue-400 to-blue-300"
       >
         <div className="max-w-2xl w-full mx-auto p-8 rounded-lg shadow-md bg-white">
-          <h2 className="text-2xl font-bold text-center text-blue-600 mb-4">
+          <h2 className="text-2xl font-bold text-center text-blue-600 mb-2">
             Vonku - Deň PSK
           </h2>
 
@@ -121,6 +123,17 @@ const RegistrationForm = () => {
                 placeholder="napíšte email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700">Kontaktná osoba:</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-md"
+                placeholder="mobilné čislo"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
                 required
               />
             </div>
