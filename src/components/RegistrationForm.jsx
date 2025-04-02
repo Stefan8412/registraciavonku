@@ -5,6 +5,8 @@ import { Link as ScrollLink } from "react-scroll";
 import { Menu, X } from "lucide-react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
+import { QRCodeCanvas } from "qrcode.react";
+
 const RegistrationForm = () => {
   const [email, setEmail] = useState("");
   const [school, setSchool] = useState("");
@@ -30,6 +32,9 @@ const RegistrationForm = () => {
     "14:30",
     "15:00",
   ];
+
+  const votingPageURL = "https://registraciavonku.psk.sk"; // Change to your actual voting page URL
+  const [qrValue, setQrValue] = useState(votingPageURL);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -98,6 +103,15 @@ const RegistrationForm = () => {
             className="block md:inline-block p-4 md:p-1 text-gray-900 font-bold cursor-pointer hover:text-blue-500"
           >
             Program
+          </ScrollLink>
+          <ScrollLink
+            onClick={() => setMenuOpen(false)}
+            to="qr-section"
+            smooth={true}
+            duration={800}
+            className="block md:inline-block p-4 md:p-1 text-gray-900 font-bold cursor-pointer hover:text-blue-500"
+          >
+            QR
           </ScrollLink>
         </div>
       </nav>
@@ -229,6 +243,16 @@ const RegistrationForm = () => {
           className="w-full max-w-4xl h-auto object-cover mt-10 rounded-lg shadow-lg
                sm:max-w-3xl md:max-w-2xl lg:max-w-full"
         />
+      </section>
+      <section
+        id="qr-section"
+        className="min-h-screen flex flex-col items-center justify-center p-6 bg-white"
+      >
+        <div className="flex flex-col items-center p-4">
+          {/* <h2 className="text-xl font-bold">Deň PSK QR Code </h2> */}
+          <QRCodeCanvas value={qrValue} size={200} />
+          <p className="mt-2 text-sm text-gray-600">Skenuj mobilom</p>
+        </div>
       </section>
     </div>
   );
